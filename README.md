@@ -30,7 +30,7 @@ Se encontró que las siguientes columnas, si bien no siempre referían a la mism
 <pre>- Status          (PP) <-> (MW)  Tipo_Trx                        = Estado de trx (aprobada, anulada, etc.)
 - MobileApp       (PP) <-> (MW)  Billetera_Interoperable_Nombre  = Aplicación virtual utilizada
 - Brand           (PP) <-> (MW)  Metodo_Pago                     = Bandera de la tarjeta de crédito
-- Bank            (PP) <-> (MW)  Banco_Interoperable_Nombre      = Banco o entidad financiera origen del pago
+- Bank            (PP) <-> (MW)  Banco_Interoperable_Nombre      = Banco/entidad financiera origen del pago
 - Type            (PP) <-> (MW)  Tipo_Metodo_Pago                = Tipo de pago (débito, crédito, etc.)
 - Installments Q  (PP) <-> (MW)  #Cuotas                         = Cantidad de cuotas con que se pagó. </pre>
 
@@ -51,20 +51,20 @@ En el caso de los registros duplicados, se resolvió dejar los de PayPlus, ya qu
 
 Como resultado final, se creó una única tabla con registros equivalentes y comparables entre sí con los siguientes campos:
 
-<pre>- Fecha                 = Fecha de la transacción
-- ID Tienda             = ID de la tienda donde se realizó la transacción.
-- Status                = Estado de la transacción (aprobada, anulada, reembolsada, etc.) 
-- Plataforma            = Plataforma desde la que se realizó el pago (Mundi Wallet, Pay Plus) 
-- Aplicación Móvil      = Aplicación desde la que se realizó el pago.
-- Bandera               = Bandera correspondiente a la tarjeta (si se abonó de otra forma se lo define como transferencia)
-- Entidad de pago       = Banco o entidad financiera origen del pago.
-- Entidad identificada  = Si el banco o entidad financiera origen del pago está identificado (Sí, No).
-- Tipo de pago          = Tipo de pago de la transacción (Débito, Crédito, Dinero Disponible, etc.)
-- Tipo de cuota         = Tipo de crédito (Tasa sistémica, Tasa Preferencial, Crédito Interno, Crédito #N/D, No crédito).      
-- Cuotas_cat            = Cuotas. Si no hay datos define "Crédito #N/D", si corresponde a otros tipos de pago se lo aclara.
-- Cuotas_num            = Cuotas. Solo considera pago c/crédito. Asume vacío para otros tipos de pago o si no hay información.
-- Cuota (c/tipo)        = Cantidad de cuotas con que se pagó + Tipo de cuota otorgada
-- Importe Neto $ARS"    = Monto abonado (en $ARS). </pre>
+<pre>- Fecha                = Fecha de la transacción
+- ID Tienda            = ID de la tienda donde se realizó la transacción.
+- Status               = Estado de la transacción (aprobada, anulada, reembolsada, etc.) 
+- Plataforma           = Plataforma desde la que se realizó el pago (Mundi Wallet, Pay Plus) 
+- Aplicación Móvil     = Aplicación desde la que se realizó el pago.
+- Bandera              = Bandera correspondiente a la tarjeta (si se abonó de otra forma se define como transferencia)
+- Entidad de pago      = Banco o entidad financiera origen del pago.
+- Entidad identificada = Si el banco o entidad financiera origen del pago está identificado (Sí, No).
+- Tipo de pago         = Tipo de pago de la transacción (Débito, Crédito, Dinero Disponible, etc.)
+- Tipo de cuota        = Tipo de crédito (Tasa sistémica, Tasa Preferencial, Crédito Interno, Crédito #N/D, No crédito).      
+- Cuotas_cat           = Cuotas. Si no hay datos define "Crédito #N/D", si corresponde a otros tipos de pago se lo aclara.
+- Cuotas_num           = Cuotas. Solo considera crédito. Asume vacío para otros tipos de pago o si no hay información.
+- Cuota (c/tipo)       = Cantidad de cuotas con que se pagó + Tipo de cuota otorgada
+- Importe Neto $ARS    = Monto abonado (en $ARS). </pre>
 
 
 
