@@ -56,13 +56,13 @@ Como resultado final, se creó una única tabla con registros equivalentes y com
 - Status               = Estado de la transacción (aprobada, anulada, reembolsada, etc.) 
 - Plataforma           = Plataforma desde la que se realizó el pago (Mundi Wallet, Pay Plus) 
 - Aplicación Móvil     = Aplicación desde la que se realizó el pago.
-- Bandera              = Bandera correspondiente a la tarjeta (si no se define el pago como transferencia)
+- Bandera              = Bandera de la tarjeta (si no, se define el pago como transferencia)
 - Entidad de pago      = Banco o entidad financiera origen del pago.
 - Entidad identificada = Si el banco o entidad financiera origen del pago está identificado (Sí, No).
 - Tipo de pago         = Tipo de pago de la transacción (Débito, Crédito, Dinero Disponible, etc.)
-- Tipo de cuota        = Tipo de crédito (Tasa sistémica, Tasa Preferencial, Crédito Interno, No crédito, etc.).      
-- Cuotas_cat           = Cuotas nominal. Se aclara si no hay datos o si corresponden a otro tipo de pago.
-- Cuotas_num           = Cuotas. Solo considera crédito. Asume vacío para otros tipos de pago o si no hay datos.
+- Tipo de cuota        = Tipo de crédito (Tasa sistémica, Tasa Preferencial, Crédito Interno, etc.).      
+- Cuotas_cat           = Var nominal. Se aclara si no hay datos o si corresponden a otro tipo de pago.
+- Cuotas_num           = Var discreta. Solo considera crédito. Si no, asume vacío.
 - Cuota (c/tipo)       = Cantidad de cuotas con que se pagó + Tipo de cuota otorgada
 - Importe Neto $ARS    = Monto abonado (en $ARS). </pre>
 
