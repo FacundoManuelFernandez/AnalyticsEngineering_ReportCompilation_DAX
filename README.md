@@ -21,18 +21,18 @@ A continuación se detallan las definiciones principales del código aportado:
 
 Las siguientes columnas se compilaron en un mismo campo sin realizar modificaciones por tratarse de información comparable y equivalente entre sí (variables numéricas, ID y tipo fecha):
 
-<pre> - Date            (PayPlus) <--> (Mundi Wallet)  Fecha_Trx                   = Fecha de la transacción
- - Terminal        (PayPlus) <--> (Mundi Wallet)  ID_Tienda                         = Tienda de la transacción
- - Amount          (PayPlus) <--> (Mundi Wallet)  Monto_Trx                         = Importe abonado en la transacción </pre>
+<pre> - Date            (PayPlus) <-> (Mundi Wallet)  Fecha_Trx                   = Fecha de la transacción
+ - Terminal        (PayPlus) <-> (Mundi Wallet)  ID_Tienda                         = Tienda de la transacción
+ - Amount          (PayPlus) <-> (Mundi Wallet)  Monto_Trx                         = Importe abonado en la transacción </pre>
 
 Se encontró que las siguientes columnas, si bien no siempre referían a la misma información, por medio de modificaciones podían utilizarse para crear nuevas variables equivalentes:
 
-<pre>- Status          (PayPlus) <--> (Mundi Wallet)  Tipo_Trx                          = Estado de la Transacción (aprobada, reembolsada, etc.)
-- MobileApp       (PayPlus) <--> (Mundi Wallet)  Billetera_Interoperable_Nombre    = Aplicación virtual utilizada para el pago
-- Brand           (PayPlus) <--> (Mundi Wallet)  Metodo_Pago                       = Bandera correspondiente a la tarjeta de crédito
-- Bank            (PayPlus) <--> (Mundi Wallet)  Banco_Interoperable_Nombre        = Banco o entidad financiera origen del pago
-- Type            (PayPlus) <--> (Mundi Wallet)  Tipo_Metodo_Pago                  = Tipo de pago (transferencia, débito, crédito, etc.)
-- Installments Q  (PayPlus) <--> (Mundi Wallet)  #Cuotas                           = Cantidad de cuotas con que se pagó. </pre>
+<pre>- Status          (PayPlus) <-> (Mundi Wallet)  Tipo_Trx                          = Estado de la trx (aprobada, reembolsada, etc.)
+- MobileApp       (PayPlus) <-> (Mundi Wallet)  Billetera_Interoperable_Nombre    = Aplicación virtual utilizada
+- Brand           (PayPlus) <-> (Mundi Wallet)  Metodo_Pago                       = Bandera de la tarjeta de crédito
+- Bank            (PayPlus) <-> (Mundi Wallet)  Banco_Interoperable_Nombre        = Banco o entidad financiera origen del pago
+- Type            (PayPlus) <-> (Mundi Wallet)  Tipo_Metodo_Pago                  = Tipo de pago (transferencia, débito, crédito, etc.)
+- Installments Q  (PayPlus) <-> (Mundi Wallet)  #Cuotas                           = Cantidad de cuotas con que se pagó. </pre>
 
 A partir de la información disponible se definieron nuevas columnas:
 
@@ -61,8 +61,8 @@ Como resultado final, se creó una única tabla con registros equivalentes y com
 - Entidad identificada  = Si el banco o entidad financiera origen del pago está identificado (Sí, No).
 - Tipo de pago          = Tipo de pago de la transacción (Débito, Crédito, Dinero Disponible, etc.)
 - Tipo de cuota         = Tipo de crédito otorgado (Tasa sistémica, Tasa Preferencial, Crédito Interno, Crédito #N/D, No crédito).      
-- Cuotas_cat            = Var cualitiva: si no hay información se define "Crédito #N/D", si corresponde a otros tipos de pago se lo aclara.
-- Cuotas_num            = Var cuantitativa: solo considera pagos de tipo crédito. Asume valor vacío para otros tipos de pago o si no hay información.
+- Cuotas_cat            = Cuotas. Si no hay información define "Crédito #N/D", si corresponde a otros tipos de pago se lo aclara.
+- Cuotas_num            = Cuotas. Solo considera pago c/crédito. Asume vacío para otros tipos de pago o si no hay información.
 - Cuota (c/tipo)        = Cantidad de cuotas con que se pagó + Tipo de cuota otorgada
 - Importe Neto $ARS"    = Monto abonado (en $ARS). </pre>
 
