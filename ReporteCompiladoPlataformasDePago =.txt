@@ -1,0 +1,324 @@
+ReporteCompiladoPlataformasDePago = 
+
+//DEFINICIÓN DE VARIABLES - REPORTE PAYPLUS
+
+VAR TablaPayPlus = //Crea la variable TablaPayPlus, donde se van a recategorizar variables
+    ADDCOLUMNS( //Función que permite crear nuevas variables antes de nutrir la tabla final
+        FILTER('PayPlus', 'PayPlus'[Status] <> "Rejected"), //Elimina los registros Rejected
+
+        "StatusPayPlus",
+            SWITCH(
+                TRUE(),
+                'PayPlus'[Status] = "Annuled", "Anulada",
+                'PayPlus'[Status] = "Approved", "Aprobada",
+                'PayPlus'[Status] = "Pending", "Pendiente",
+                'PayPlus'[Status] = "Refunded", "Reembolsada"
+            ),
+
+	"Plataforma", "PayPlus", //Define que el valor del campo Plataforma sea siempre "PayPlus"
+
+        "AppUtilizadaPayPlus",
+            SWITCH(
+                TRUE(), //Primero redefine los valores de la aplicación o entidad de pago cuyo nombre hay que cambiar
+                'PayPlus'[MobileApp] = "Summit", "Summit Bank",
+                'PayPlus'[MobileApp] = "Pioneer", "Pioneer Financial",
+                'PayPlus'[MobileApp] = "Horizon", "Horizon National Bank",
+                'PayPlus'[MobileApp] = "Crestview", "Crestview Bank & Trust",
+                'PayPlus'[MobileApp] //Si no se redefine el valor de la variable, se trae el valor original de este campo
+            ),
+
+        "Bandera", //Estandariza los valores originales de "Brand" de PayPlus
+            SWITCH(
+                TRUE(),
+                'PayPlus'[Brand] = "aurora", "Aurora",
+                'PayPlus'[Brand] = "skyline", "Skyline Payments",
+                'PayPlus'[Brand] = "silverleaf", "SilverLeaf Card",
+                'PayPlus'[Brand] = "vertex", "Vertex Credit",
+                'PayPlus'[Brand] = "ppt", "Transferencia" //ppt: Pago por transferencia
+            ),
+
+        "Entidad de pagoPayPlus",
+            SWITCH(
+                TRUE(), //Primero redefine los valores de Banco cuyo nombre hay que cambiar
+                'PayPlus'[Bank] = "Summit", "Summit Bank",
+                'PayPlus'[Bank] = "Pioneer", "Pioneer Financial",
+                'PayPlus'[Bank] = "Horizon", "Horizon National Bank",
+                'PayPlus'[Bank] = "Crestview", "Crestview Bank & Trust",
+                'PayPlus'[Bank] = "SummApp+", "Summit Bank", //Se define banco y no billetera
+                IF(
+                    ISBLANK('PayPlus'[Bank]) || 'PayPlus'[Bank] = "",
+                    BLANK(), //Si "Bank" es blank, trae blank. No debería haber casos.
+                    'PayPlus'[Bank]  //Si no se redefine el valor de la variable y el campo no está vacío, se trae el valor original del campo "Bank".
+                )
+            ),
+
+        "Entidad identificada", //Define si la entidad de pago está identificada o no en el reporte
+            IF(
+                ISBLANK('PayPlus'[Bank]) || 'PayPlus'[Bank] = "",
+                "Genérico", //Si el valor de "Bank" es blank se define como "Genérico"
+                "Identificado" //Si el valor de "Bank" no es blank se define "Identificado",
+            ), //En el reporte de PayPlus siempre está el valor para "Bank", no hay blanks
+
+        "Tipo de pago", //Estandariza los valores originales de "Type" de PayPlus
+            SWITCH(
+                TRUE(),
+                'PayPlus'[Type] = "Credit", "Crédito",
+                'PayPlus'[Type] = "Debit", "Débito",
+                'PayPlus'[Type] = "Current", "Cuenta corriente",
+                'PayPlus'[Type] = "Savings", "Dinero en cuenta",
+                'PayPlus'[Type] = "Prepaid", "Tarjeta Prepaga"
+            ),
+
+        "Tipo de cuota",
+            SWITCH(
+                TRUE(),
+                'PayPlus'[Type] <> "Credit", "No crédito",
+                //Primero se clasifica directamente todo lo que no es Crédito
+                'PayPlus'[Type] = "Credit" && ('PayPlus'[Installments Code] = 93 || 'PayPlus'[Installments Code] = 96), "Tasa preferencial", //Se define "Tasa preferencial" para Installments Code 93 y 96
+                'PayPlus'[Type] = "Credit" && ISBLANK('PayPlus'[Installments Code]), "Crédito #N/D",
+                //Si no está el dato de Installments Code se define directamente como "Crédito #N/D". No se puede saber si es Tasa Preferencial o Tasa sistémica porque el único campo que tiene ese dato es Installments Code
+                "Tasa sistémica" //Si es crédito, no va en cuotas 93/96 y no está vacío, el valor por defecto de la variable es "Tasa sistémica". Se puso "Tasa sistémica", pero se puede dimensionar también como "Tasa sistémica PayPlus", para luego con "Sistémica MW" diferenciar de "Crédito interno MW".
+            ),
+
+        "Cuotas_nominal", //Define los valores para la variable "Cuotas" de uso nominal
+            SWITCH(
+                TRUE(),
+                //Primero define lo que no va en cuotas (lo distinto a Crédito). De esta manera nos aseguramos que solo se evalúan las cuotas de ese Tipo de pago y no se intercalan valores de 1 cuota de debito u otra forma de abonar
+                'PayPlus'[Type] = "Debit", "Débito",
+                'PayPlus'[Type] = "Savings", "Dinero en cuenta",
+                'PayPlus'[Type] = "Current", "Cuenta corriente",
+                'PayPlus'[Type] = "Prepaid", "Tarjeta Prepaga",
+                'PayPlus'[Type] = "Credit", //Por último se define lo que es Crédito
+                    IF(
+                        'PayPlus'[Installments Code] = 93, "3", //asigna 3 si es cuota 93
+                        IF(
+                            'PayPlus'[Installments Code] = 96, "6", //asigna 6 si es cuota 96
+                            IF(
+                                ISBLANK('PayPlus'[Installments Code]) && ISBLANK('PayPlus'[Installments Q]), "Crédito #N/D",
+                                IF(
+                                    ISBLANK('PayPlus'[Installments Code]) && NOT(ISBLANK('PayPlus'[Installments Q])),
+                                    FORMAT('PayPlus'[Installments Q], "0"),
+                                    FORMAT('PayPlus'[Installments Code], "0")
+                                )
+                            )
+                        )
+                    ),
+                    // Es posible que en algunos registros el valor de Installments code esté vacío, pero el de Installments Q no. En ese caso, se asigna a Installments Code el valor de Installments Q. Si Installments Code no está vacío, se asigna el valor original de Installments Code
+                BLANK()
+            ),
+
+        "Cuotas_num", //Define los valores para la variable cuotas de uso numérico
+            IF(
+                'PayPlus'[Type] = "Credit", //Solo considera cuotas si es Crédito
+                'PayPlus'[Installments Q], //Se trae el dato de Installments Q, que representa el valor real de la cantidad de cuotas en que se abona
+                BLANK() //Si es crédito y Installments Q está vacío, trae vacío. Está ok porque es una variable de tipo numérico
+            )
+    ) // Se cierra el ADDCOLUMNS de TablaPayPlus
+
+// DEFINICIÓN DE VARIABLES - REPORTE MUNDI WALLET (MW)
+
+VAR TablaMW = //Crea la variable TablaMW, donde se van a recategorizar variables
+    ADDCOLUMNS( //Función que permite crear nuevas variables antes de nutrir la tabla final
+        FILTER(
+            'MW',
+            NOT(
+                'MW'[Tipo_Trx] = "Desembolso" || //Elimina los registros Desembolso
+                //Elimina todos los pagos transaccionados mediante PayPlus para que no se dupliquen porque ya están en el reporte de PayPlus:
+                'MW'[Billetera_Interoperable_Nombre] = "Billetera para PPT - PayPlus" ||
+                'MW'[Billetera_Interoperable_Nombre] = "PayPlusBS" ||
+                'MW'[Billetera_Interoperable_Nombre] = "PayPlusAurora"
+            )
+        ),
+
+        "StatusMW",
+            SWITCH(
+                TRUE(),
+                'MW'[Tipo_Trx] = "SETTLED", "Aprobada",
+                'MW'[Tipo_Trx] = "REFUNDED", "Reembolsada"
+            ),
+
+        "Plataforma", "Mundi Wallet", //Define que el valor del campo Plataforma sea siempre "Mundi Wallet"
+
+        "AppUtilizadaMW",
+            SWITCH(
+                TRUE(),
+                'MW'[Billetera_Interoperable_Nombre] = "CUENTADNI", "Cuenta DNI",
+                'MW'[Billetera_Interoperable_Nombre] = "UALA", "Ualá",
+                'MW'[Billetera_Interoperable_Nombre] = "PersonalPay", "Personal Pay",
+                'MW'[Billetera_Interoperable_Nombre] = "Billetera Galicia", "Banco Galicia",
+                //Se agrega esto para los campos vacios de Billetera_Interoperable_Nombre pero llenos en Banco_Interoperable_Nombre:
+                'MW'[Banco_Interoperable_Nombre] = "PAGO VIRTUAL DEL SUR SA", "Pago Virtual del Sur",
+                'MW'[Banco_Interoperable_Nombre] = "LEMON", "Lemon",
+                //Si Billetera_Interoperable_Nombre está vacío pero Banco_Interoperable_Nombre tiene valor, que traiga el dato de Banco_Interoperable_Nombre:
+                (ISBLANK('MW'[Billetera_Interoperable_Nombre]) || 'MW'[Billetera_Interoperable_Nombre] = "") && NOT(ISBLANK('MW'[Banco_Interoperable_Nombre])) && 'MW'[Banco_Interoperable_Nombre] <> "", 'MW'[Banco_Interoperable_Nombre],
+                //Si Billetera_Interoperable_Nombre también está vacío, usar "Mundi Wallet":
+                ISBLANK('MW'[Billetera_Interoperable_Nombre]) || 'MW'[Billetera_Interoperable_Nombre] = "","Mundi Wallet",
+                //Si Billetera_Interoperable_Nombre tiene un valor asignado y no fue modificado previamente, muestra el nombre original
+                'MW'[Billetera_Interoperable_Nombre]
+            ),
+
+        "Bandera",
+            SWITCH( //Estandariza los valores originales de "Metodo Pago" de MW
+                TRUE(),
+                //El énfasis en este caso está en la bandera, no importan las aclaraciones relativas a débito, dinero en cuenta, demás, porque eso se ve con la variable Tipo de pago.
+                'MW'[Metodo_Pago] = "dinero_disponible", "Transferencia",
+                'MW'[Metodo_Pago] = "transf_interop", "Transferencia",
+                'MW'[Metodo_Pago] = "credit_consumidor", "Transferencia",
+                'MW'[Metodo_Pago] = "aurora", "Aurora",
+                'MW'[Metodo_Pago] = "debaurora", "Aurora",                
+                'MW'[Metodo_Pago] = "skyline", "Skyline Payments",
+                'MW'[Metodo_Pago] = "debskyline", "Skyline Payments",                
+                'MW'[Metodo_Pago] = "silverleaf", "SilverLeaf Card",
+                'MW'[Metodo_Pago] = "vertex", "Vertex Credit",
+
+
+                //Para los valores "dinero_disponible" y "transf_interop" se siguió el criterio de PayPlus, en donde savings y current se definen como ppt (Transferencia). Con respecto a "credit_consumidor", se definió tomarlo como una transferencia, en el sentido de que no se utilizó ningún tipo de tarjeta de debito o credito que tuviera bandera alguna.
+            ),
+
+	"Entidad de pagoMW",
+            SWITCH(
+                TRUE(), //Primero redefine los valores de Banco cuyo nombre hay que cambiar
+                'MW'[Metodo_Pago] = "vertex", "Vertex Credit",
+                //Empieza por Metodo_Pago = vertex, que es un caso particular, porque a esa bandera solo le corresponde una única entidad de pago.
+                //Continua con todos los Banco_Interoperable_Nombre a definir:
+                'MW'[Banco_Interoperable_Nombre] = "Summit", "Summit Bank",
+                'MW'[Banco_Interoperable_Nombre] = "Pioneer", "Pioneer Financial",
+                'MW'[Banco_Interoperable_Nombre] = "Horizon", "Horizon National Bank",
+                'MW'[Banco_Interoperable_Nombre] = "Crestview", "Crestview Bank & Trust",
+                //Define como Mundi Wallet a los valores que tengan vacío el Banco_Interoperable_Nombre y cuyo tipo de pago sean tarjeta prepaga, dinero disponible y crédito interno MW.
+                (ISBLANK('MW'[Banco_Interoperable_Nombre]) || 'MW'[Banco_Interoperable_Nombre] = "") &&
+                'MW'[Tipo_Metodo_Pago] IN {"tarjeta_prepaga","dinero_cuenta","dinero_digital"}, "Mundi Wallet",
+                //Define como vacíos a los valores cuyo Banco_Interoperable_Nombre esté vacío y su método de pago no corresponda a Mundi Wallet o su metodo pago a Vertex
+                (ISBLANK('MW'[Banco_Interoperable_Nombre]) || 'MW'[Banco_Interoperable_Nombre] = "") &&
+                'MW'[Metodo_Pago] <> "vertex", BLANK(),
+                'MW'[Banco_Interoperable_Nombre] //Si no se redefine el valor de la variable y el campo Banco_Interoperable_Nombre no está vacío, se trae el valor original de este campo
+            ),
+
+  	"Entidad identificada", //Define si la entidad de pago está identificada o no en el reporte
+            SWITCH(
+                TRUE(),
+                'MW'[Metodo_Pago] = "vertex", "Identificado",
+                //Como la bandera de "vertex" solo refiere a "Vertex Credit" como Entidad de pago, se lo define como identificado
+                'MW'[Tipo_Metodo_Pago] IN {"tarjeta_prepaga","dinero_cuenta","dinero_digital"}, "Identificado",
+                //Se define como "Identificado" a aquellos valores que en Entidad de pago remiten a Mundi Wallet.
+                ISBLANK('MW'[Banco_Interoperable_Nombre]) || 'MW'[Banco_Interoperable_Nombre] = "", "Genérico",
+                //Si no se cumplen las condiciones de Vertex Credit y Mundi Wallet y el Banco_Interoperable_Nombre está vacío, se define como genérico
+                "Identificado"
+                //Si no, se define como identificado (se asume que Banco_Interoperable_Nombre aporta el valor de la entidad de pago).
+            ),
+
+        "Tipo de pago", //Estandariza los valores originales Tipo Método Pago de MW
+            SWITCH(
+                TRUE(),
+                'MW'[Tipo_Metodo_Pago] = "dinero_cuenta", "Dinero en cuenta",
+                'MW'[Tipo_Metodo_Pago] = "tarjeta_credito", "Crédito",
+                'MW'[Tipo_Metodo_Pago] = "tarjeta_debito", "Débito",
+                'MW'[Tipo_Metodo_Pago] = "transf_bancaria", "Cuenta corriente",
+                'MW'[Tipo_Metodo_Pago] = "tarjeta_prepago", "Tarjeta prepaga",
+                'MW'[Tipo_Metodo_Pago] = "dinero_digital", "Crédito interno MW"
+            ),
+
+        "Tipo de cuota",
+            SWITCH(
+                TRUE(),
+                //Primero se clasifica directamente todo lo que no es Crédito
+                ('MW'[Tipo_Metodo_Pago] <> "tarjeta_credito" && 'MW'[Tipo_Metodo_Pago] <> "dinero_digital"), "No crédito",
+                'MW'[Tipo_Metodo_Pago] = "dinero_digital", "Crédito interno MW",      
+                "Tasa sistémica" //Si es crédito distinto a crédito interno se define por defecto el valor "Tasa sistémica". Se puede también poner "Sistémica MW", diferenciadola así para medir su relacion respecto a Crédito Interno MW.
+                //Si es tarjeta_credito y #Cuotas está vacío no tiene sentido definir "Crédito #N/D", ya que si es tarjeta_credito siempre va a ser sistémica con MW (No existe Tasa preferencial. Si existiera habría que agregar una cláusula con esa condición).
+            ),
+
+        "Cuotas_nominal", //Define los valores para la variable "Cuotas" de uso nominal
+            SWITCH(
+                TRUE(),
+                //Primero define lo que no va en cuotas (lo distinto a Crédito). De esta manera nos aseguramos que solo se evaluan las cuotas de ese tipo de pago y no se intercalan valores de 1 cuota de debito u otra forma de abonar
+                'MW'[Tipo_Metodo_Pago] = "dinero_cuenta", "Dinero en cuenta",
+                'MW'[Tipo_Metodo_Pago] = "tarjeta_debito", "Débito",
+                'MW'[Tipo_Metodo_Pago] = "transf_bancaria", "Cuenta corriente",
+                'MW'[Tipo_Metodo_Pago] = "tarjeta_prepago", "Tarjeta prepaga",
+                //Mundi Wallet tiene dos formas crédito. Se define una y una.
+                //Se evalúan las tarjetas de crédito
+                'MW'[Tipo_Metodo_Pago] = "tarjeta_credito",
+                    IF(
+                        ISBLANK('MW'[#Cuotas]), "Crédito #N/D",
+                        //Si el valor de #Cuotas está vacío, se asigna "Crédito #N/D",
+                        FORMAT('MW'[#Cuotas], "0") //FORMAT da valor nominal a los numeros
+                        //Si el valor no está vacío, se asigna el valor original de #Cuotas
+                    ),
+                //Se evalúa el crédito interno de MW:
+                'MW'[Tipo_Metodo_Pago] = "dinero_digital", 
+                    IF(
+                        ISBLANK('MW'[#Cuotas]), "Crédito Interno MW #N/D",
+                        //Si el valor de #Cuotas está vacío, se asigna "Crédito #N/D",
+                        FORMAT('MW'[#Cuotas], "0") //FORMAT da valor nominal a los numeros
+                        //Si el valor no está vacío, se asigna el valor original de #Cuotas
+                    ),
+                BLANK()
+            ),
+        
+        "Cuotas_num", //Define los valores para la variable cuotas de uso numérico
+            IF(
+                'MW'[Tipo_Metodo_Pago] = "tarjeta_credito" || 'MW'[Tipo_Metodo_Pago] = "dinero_digital", //Solo considera cuotas si es Crédito, no importa si es con tarjeta o interno MW
+                'MW'[#Cuotas], //Trae el valor de las cuotas
+                BLANK() //Si es crédito y #Cuotas está vacío, trae vacío. Está ok porque es una variable de Tipo numérico
+            )
+    ) // Se cierra el ADDCOLUMNS de TablaMW
+
+RETURN // Devuelve los valores que definimos previamente
+
+UNION( //Se compila en una tabla las columnas que vienen de ambos reportes
+
+    //Se definen las columnas y su fuente de datos para ambos reportes
+
+    SELECTCOLUMNS( //Se definen las columnas y fuente de datos de PayPlus
+        TablaPayPlus,
+        "Fecha", 'PayPlus'[Fecha], //Se trae la data bruta del reporte PayPlus
+        "ID Tienda", 'PayPlus'[Terminal], //Se trae la data bruta del reporte PayPlus. Luego con la tabla de dimensiones relacionada se propaga el filtro para definir Tienda
+        "Status", [StatusPayPlus], //Se trae la variable previamente recategorizada
+        "Plataforma", [Plataforma], //Se trae la variable previamente recategorizada
+        "Aplicación Móvil", [AppUtilizadaPayPlus], //Se trae la variable previamente recategorizada
+        "Bandera", [Bandera], //Se trae la variable previamente recategorizada
+        "Entidad de pago",
+        //Se trae la variable previamente recategorizada. Recordar que se definió que si la variable "Bank" era blank, se trajera el valor vacío.
+            IF(
+                ISBLANK([Entidad de pagoPayPlus]) || [Entidad de pagoPayPlus] = "",
+                [Plataforma] & " " & [Tipo de pago] & " " & [Bandera],
+                [Entidad de pagoPayPlus]
+                //Si la variable está vacía, se define como valor la conjunción de los valores de Plataforma, Tipo de pago y Bandera. Si no está vacía se trae el valor que le corresponde.
+                //Este valor de conjunción se define en SELECTCOLUMNS porque solo así se pueden usar los valores recategorizados. Desde ADDCOLUMNS no se puede.
+            ),
+        "Entidad identificada", [Entidad identificada], //Se trae la variable antes categorizada
+        "Tipo de pago", [Tipo de pago], //Se trae la variable previamente recategorizada
+        "Tipo de cuota", [Tipo de cuota], //Se trae la variable previamente recategorizada       
+        "Cuotas_cat", [Cuotas_nominal], //Se trae la variable previamente recategorizada
+        "Cuotas_num", [Cuotas_num], //Se trae la variable previamente recategorizada
+        "Cuota (c/tipo)", [Cuotas_num] & " " & [Tipo de cuota],
+        "Importe Neto $ARS", 'PayPlus'[Monto] //Se trae la data bruta del reporte PayPlus
+    ), // Se cierra SELECTCOLUMNS TablaPayPlus
+
+    SELECTCOLUMNS( //Se definen las columnas y fuente de datos de MW
+        TablaMW,
+        "Fecha", 'MW'[TRANSACTION_DATE], //Se trae la data bruta del reporte MW
+        "ID Tienda", 'MW'[STORE_ID], //Se trae la data bruta del reporte MP. Luego con la tabla de dimensiones relacionada se propaga el filtro para definir Tienda
+        "Status", [StatusMW], //Se trae la variable previamente recategorizada
+        "Plataforma", [Plataforma], //Se trae la variable previamente recategorizada
+        "Aplicación Móvil", [AppUtilizadaMW], //Se trae la variable previamente recategorizada.        
+        "Bandera", [Bandera], //Se trae la variable previamente recategorizada
+        "Entidad de pago",
+        //Se trae la variable previamente recategorizada. Recordar que se definió que si la variable "POI Bank Name" era blank, se trajera el valor vacío.        
+            IF(
+                ISBLANK([Entidad de pagoMW]) || [Entidad de pagoMW] = "",
+                "MW" & " " & [Tipo de pago] & " " & [Bandera],
+                [Entidad de pagoMW]
+                //Si la variable está vacía, se define como valor la conjunción de los valores de la Plataforma (MW), Tipo de pago y Bandera. Si no está vacía se trae el valor que le corresponde.
+                //Este valor de conjunción se define en SELECTCOLUMNS porque solo así se pueden usar los valores recategorizados. Desde ADDCOLUMNS no se puede.                
+            ),
+        "Entidad identificada", [Entidad identificada], //Se trae la variable antes categorizada
+        "Tipo de pago", [Tipo de pago], //Se trae la variable previamente recategorizada
+        "Tipo de cuota", [Tipo de cuota], //Se trae la variable previamente recategorizada                
+        "Cuotas_cat", [Cuotas_nominal], //Se trae la variable previamente recategorizada
+        "Cuotas_num", [Cuotas_num], //Se trae la variable previamente recategorizada
+        "Cuota (c/tipo)", [Cuotas_num] & " " & [Tipo de cuota],        
+        "Importe Neto $ARS", 'MW'[TRANSACTION_AMOUNT] //Se trae data bruta del reporte MW
+    ) // Se cierra SELECTCOLUMNS TablaMW
+) //Se cierra UNION
