@@ -2,7 +2,7 @@ Este es un proyecto real de Analytics Engineering desarrollado plenamente con DA
 
 A partir de dos reportes de plataformas de pago diferentes, se los unificó en una única tabla o entidad coherente.
 
-En primer lugar, a partir de un estudio de data profiling, se analizaron en profundidad los datos disponibles paea cada reporte.
+En primer lugar, a partir de un estudio de data profiling, se analizaron en profundidad los datos disponibles paRa cada reporte.
 
 Se identificaron las columnas en común, sus valores equivalentes y diferentes. Las columnas innecesarias o que no tenían un campo correlativo fueron descartadas.
 
@@ -12,7 +12,7 @@ Se limpiaron y estandarizaron los valores por medio de la creación de nuevas va
 
 A partir de los datos disponibles se definieron nuevas columnas pertinentes para el análisis.
 
-Se realizaron diferentes pruebas con visualizaciones para evaluar que las modificaciones fueran pertinentes y funcionaran correctamente.
+Se realizaron diferentes pruebas con visualizaciones para evaluar que las modificaciones funcionaran correctamente.
 
 La información corresponde a dos plataformas de pago, que llamaremos PayPlus y Mundi Wallet.
 
