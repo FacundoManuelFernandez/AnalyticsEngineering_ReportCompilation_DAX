@@ -21,6 +21,7 @@ VAR TablaPayPlus = //Crea la variable TablaPayPlus, donde se van a recategorizar
             SWITCH(
                 TRUE(), //Primero redefine los valores de la aplicación o entidad de pago cuyo nombre hay que cambiar
                 'PayPlus'[MobileApp] = "Summit", "Summit Bank",
+				'PayPlus'[MobileApp] = "SummApp+", "SummApp+", // Se distingue entre aplicaciones del mismo banco
                 'PayPlus'[MobileApp] = "Pioneer", "Pioneer Financial",
                 'PayPlus'[MobileApp] = "Horizon", "Horizon National Bank",
                 'PayPlus'[MobileApp] = "Crestview", "Crestview Bank & Trust",
@@ -44,7 +45,7 @@ VAR TablaPayPlus = //Crea la variable TablaPayPlus, donde se van a recategorizar
                 'PayPlus'[Bank] = "Pioneer", "Pioneer Financial",
                 'PayPlus'[Bank] = "Horizon", "Horizon National Bank",
                 'PayPlus'[Bank] = "Crestview", "Crestview Bank & Trust",
-                'PayPlus'[Bank] = "SummApp+", "Summit Bank", //Se define banco y no billetera
+                'PayPlus'[Bank] = "SummApp+", "Summit Bank", //Se define el banco, por más de que la app o billetera sea distinta.
                 IF(
                     ISBLANK('PayPlus'[Bank]) || 'PayPlus'[Bank] = "",
                     BLANK(), //Si "Bank" es blank, trae blank. No debería haber casos.
@@ -322,3 +323,4 @@ UNION( //Se compila en una tabla las columnas que vienen de ambos reportes
         "Importe Neto $ARS", 'MW'[TRANSACTION_AMOUNT] //Se trae data bruta del reporte MW
     ) // Se cierra SELECTCOLUMNS TablaMW
 ) //Se cierra UNION
+
