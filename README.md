@@ -36,10 +36,10 @@ Se encontró que las siguientes columnas, si bien no siempre referían a la mism
 
 A partir de la información disponible se definieron nuevas columnas:
 
-- Plataforma = plataforma desde la cual se originó el pago. Admite solo dos valores: Mundi Wallet/PayPlus.
-- Entidad identificada = si la entidad de pago está identificada o no (muchos pagos con tarjeta de crédito no indican el banco).
-- Tipo de Cuota = si el crédito corre por tasa sistémica, preferencial, si es interno a una plataforma, si no hay datos.
-- Cuota (c/tipo) = la cantidad de cuotas otorgadas junto con el tipo de crédito que le corresponde.
+<pre>- Plataforma = plataforma desde la cual se originó el pago. Admite solo: Mundi Wallet/PayPlus.
+- Entidad identificada = si el banco o entidad de pago está identificado o no.
+- Tipo de Cuota = si el crédito corre por tasa sistémica, preferencial, si es interno a una plataforma.
+- Cuota (c/tipo) = la cantidad de cuotas otorgadas junto con el tipo de crédito que le corresponde. </pre>
 
 A la par, se definieron dos tipos de variables de cuotas:
 
