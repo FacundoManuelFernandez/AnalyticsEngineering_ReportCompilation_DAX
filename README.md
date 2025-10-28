@@ -27,12 +27,12 @@ Las siguientes columnas se compilaron en un mismo campo sin realizar modificacio
 
 Se encontró que las siguientes columnas, si bien no siempre referían a la misma información, por medio de modificaciones podían utilizarse para crear nuevas variables equivalentes:
 
-<pre>- Status          (PP) <-> (MW)  Tipo_Trx                          = Estado de la trx (aprobada, reembolsada, etc.)
-- MobileApp       (PP) <-> (MW)  Billetera_Interoperable_Nombre    = Aplicación virtual utilizada
-- Brand           (PP) <-> (MW)  Metodo_Pago                       = Bandera de la tarjeta de crédito
-- Bank            (PP) <-> (MW)  Banco_Interoperable_Nombre        = Banco o entidad financiera origen del pago
-- Type            (PP) <-> (MW)  Tipo_Metodo_Pago                  = Tipo de pago (débito, crédito, etc.)
-- Installments Q  (PP) <-> (MW)  #Cuotas                           = Cantidad de cuotas con que se pagó. </pre>
+<pre>- Status          (PP) <-> (MW)  Tipo_Trx                        = Estado de trx (aprobada, anulada, etc.)
+- MobileApp       (PP) <-> (MW)  Billetera_Interoperable_Nombre  = Aplicación virtual utilizada
+- Brand           (PP) <-> (MW)  Metodo_Pago                     = Bandera de la tarjeta de crédito
+- Bank            (PP) <-> (MW)  Banco_Interoperable_Nombre      = Banco o entidad financiera origen del pago
+- Type            (PP) <-> (MW)  Tipo_Metodo_Pago                = Tipo de pago (débito, crédito, etc.)
+- Installments Q  (PP) <-> (MW)  #Cuotas                         = Cantidad de cuotas con que se pagó. </pre>
 
 A partir de la información disponible se definieron nuevas columnas:
 
