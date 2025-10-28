@@ -31,7 +31,7 @@ Se encontró que las siguientes columnas, si bien no siempre referían a la mism
 - MobileApp       (PayPlus) <-> (Mundi Wallet)  Billetera_Interoperable_Nombre    = Aplicación virtual utilizada
 - Brand           (PayPlus) <-> (Mundi Wallet)  Metodo_Pago                       = Bandera de la tarjeta de crédito
 - Bank            (PayPlus) <-> (Mundi Wallet)  Banco_Interoperable_Nombre        = Banco o entidad financiera origen del pago
-- Type            (PayPlus) <-> (Mundi Wallet)  Tipo_Metodo_Pago                  = Tipo de pago (transferencia, débito, crédito, etc.)
+- Type            (PayPlus) <-> (Mundi Wallet)  Tipo_Metodo_Pago                  = Tipo de pago (débito, crédito, etc.)
 - Installments Q  (PayPlus) <-> (Mundi Wallet)  #Cuotas                           = Cantidad de cuotas con que se pagó. </pre>
 
 A partir de la información disponible se definieron nuevas columnas:
@@ -60,8 +60,8 @@ Como resultado final, se creó una única tabla con registros equivalentes y com
 - Entidad de pago       = Banco o entidad financiera origen del pago.
 - Entidad identificada  = Si el banco o entidad financiera origen del pago está identificado (Sí, No).
 - Tipo de pago          = Tipo de pago de la transacción (Débito, Crédito, Dinero Disponible, etc.)
-- Tipo de cuota         = Tipo de crédito otorgado (Tasa sistémica, Tasa Preferencial, Crédito Interno, Crédito #N/D, No crédito).      
-- Cuotas_cat            = Cuotas. Si no hay información define "Crédito #N/D", si corresponde a otros tipos de pago se lo aclara.
+- Tipo de cuota         = Tipo de crédito (Tasa sistémica, Tasa Preferencial, Crédito Interno, Crédito #N/D, No crédito).      
+- Cuotas_cat            = Cuotas. Si no hay datos define "Crédito #N/D", si corresponde a otros tipos de pago se lo aclara.
 - Cuotas_num            = Cuotas. Solo considera pago c/crédito. Asume vacío para otros tipos de pago o si no hay información.
 - Cuota (c/tipo)        = Cantidad de cuotas con que se pagó + Tipo de cuota otorgada
 - Importe Neto $ARS"    = Monto abonado (en $ARS). </pre>
