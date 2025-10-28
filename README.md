@@ -21,7 +21,7 @@ A continuación se detallan las definiciones principales del código aportado:
 
 Las siguientes columnas se compilaron en un mismo campo sin realizar modificaciones por tratarse de información comparable y equivalente entre sí (variables numéricas, ID y tipo fecha):
 
-<pre> - Date            (PayPlus) <-> (Mundi Wallet)  Fecha_Trx                    = Fecha de la transacción
+<pre> - Date            (PayPlus) <-> (Mundi Wallet)  Fecha_Trx                         = Fecha de la transacción
  - Terminal        (PayPlus) <-> (Mundi Wallet)  ID_Tienda                         = Tienda de la transacción
  - Amount          (PayPlus) <-> (Mundi Wallet)  Monto_Trx                         = Importe abonado en la transacción </pre>
 
