@@ -36,10 +36,10 @@ Se encontró que las siguientes columnas, si bien no siempre referían a la mism
 
 A partir de la información disponible se definieron nuevas columnas:
 
-<pre>- Plataforma = Define la plataforma desde la cual se originó el pago, por lo que admite solo dos valores: Mundi Wallet/PayPlus.
-- Entidad identificada = Define si la entidad de pago está identificada o no (muchos pagos con tarjeta de crédito realizados desde Mundi no indican el banco de la tarjeta).
-- Tipo de Cuota = Define el tipo de crédito: si corresponde a una tasa sistémica o preferencial (en las tarjetas de crédito), crédito interno de una plataforma o si no hay datos al respecto.
-- Cuota (c/tipo) = Define en un mismo valor la cantidad de cuotas otorgadas junto con el tipo de crédito que le corresponde </pre>
+<pre>- Plataforma = plataforma desde la cual se originó el pago, por lo que admite solo dos valores: Mundi Wallet/PayPlus.
+- Entidad identificada = si la entidad de pago está identificada o no (muchos pagos con tarjeta de crédito realizados desde Mundi no indican el banco de la tarjeta).
+- Tipo de Cuota = tipo de crédito: si corresponde a una tasa sistémica o preferencial (en las tarjetas de crédito), crédito interno de una plataforma o si no hay datos.
+- Cuota (c/tipo) = la cantidad de cuotas otorgadas junto con el tipo de crédito que le corresponde </pre>
 
 A la par, se definieron dos tipos de variables de cuotas:
 
@@ -61,8 +61,8 @@ Como resultado final, se creó una única tabla con registros equivalentes y com
 - Entidad identificada  = Si el banco o entidad financiera origen del pago está identificado (Sí, No).
 - Tipo de pago          = Tipo de pago de la transacción (Débito, Crédito, Dinero Disponible, etc.)
 - Tipo de cuota         = Tipo de crédito otorgado (Tasa sistémica, Tasa Preferencial, Crédito Interno, Crédito #N/D, No crédito).      
-- Cuotas_cat            = Variable cualitiva para la cantidad de cuotas: si no hay información se define "Crédito #N/D", si corresponde a otros tipos de pago se lo aclara.
-- Cuotas_num            = Variable cuantitativa para la cantidad de cuotas: solo considera pagos de tipo crédito. Asume valor vacío para otros tipos de pago o si no hay información.
+- Cuotas_cat            = Var cualitiva: si no hay información se define "Crédito #N/D", si corresponde a otros tipos de pago se lo aclara.
+- Cuotas_num            = Var cuantitativa: solo considera pagos de tipo crédito. Asume valor vacío para otros tipos de pago o si no hay información.
 - Cuota (c/tipo)        = Cantidad de cuotas con que se pagó + Tipo de cuota otorgada
 - Importe Neto $ARS"    = Monto abonado (en $ARS). </pre>
 
