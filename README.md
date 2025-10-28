@@ -18,9 +18,10 @@ La información corresponde a dos plataformas de pago, que llamaremos PayPlus y 
 
 A continuación se detallan las definiciones principales del código aportado:
 
+
 Las siguientes columnas se compilaron en un mismo campo sin realizar modificaciones por tratarse de información comparable y equivalente entre sí (variables numéricas, ID y tipo fecha):
 
-- Date             (PayPlus) <--> (Mundi Wallet)    Fecha_Trx                           = Fecha de la transacción
+<pre> - Date             (PayPlus) <--> (Mundi Wallet)    Fecha_Trx                           = Fecha de la transacción </pre>
 - Terminal         (PayPlus) <--> (Mundi Wallet)    ID_Tienda                           = Tienda de la transacción
 - Amount           (PayPlus) <--> (Mundi Wallet)    Monto_Trx                           = Importe abonado en la transacción
 
@@ -41,6 +42,7 @@ A partir de la información disponible se definieron nuevas columnas:
 - Cuota (c/tipo) = Define en un mismo valor la cantidad de cuotas otorgadas junto con el tipo de crédito que le corresponde
 
 A la par, se definieron dos tipos de variables de cuotas:
+
 Cuotas_cat = para medir datos categóricos 
 Cuotas_num = para realizar cálculos numéricos
 
