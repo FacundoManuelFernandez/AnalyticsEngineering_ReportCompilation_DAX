@@ -1,10 +1,17 @@
 Este es un proyecto real de Analytics Engineering desarrollado plenamente con DAX para Power BI.
+
 A partir de dos reportes de plataformas de pago diferentes, se los unificó en una única tabla o entidad coherente.
+
 En primer lugar, a partir de un estudio de data profiling, se analizaron en profundidad los datos disponibles paea cada reporte.
+
 Se identificaron las columnas en común, sus valores equivalentes y diferentes. Las columnas innecesarias o que no tenían un campo correlativo fueron descartadas.
+
 Se analizaron las particularidades e inconvenientes de los reportes: datos faltantes, incongruencias, incompatibilidad de información, duplicación de registros.
+
 Se limpiaron y estandarizaron los valores por medio de la creación de nuevas variables o campos.
+
 A partir de los datos disponibles se definieron nuevas columnas pertinentes para el análisis.
+
 Se realizaron diferentes pruebas con visualizaciones para evaluar que las modificaciones fueran pertinentes y funcionaran correctamente.
 
 La información corresponde a dos plataformas de pago, que llamaremos PayPlus y Mundi Wallet.
@@ -42,20 +49,20 @@ En el caso de los registros duplicados, se resolvió dejar los de PayPlus, ya qu
 
 Como resultado final, se creó una única tabla con registros equivalentes y comparables entre sí con los siguientes campos:
 
-Fecha                 = Fecha de la transacción
-ID Tienda             = ID de la tienda donde se realizó la transacción.
-Status                = Estado de la transacción (aprobada, anulada, reembolsada, etc.)
-Plataforma            = Plataforma desde la que se realizó el pago (Mundi Wallet, Pay Plus)
-Aplicación Móvil      = Aplicación desde la que se realizó el pago.
-Bandera               = Bandera correspondiente a la tarjeta (si se abonó de otra forma se lo define como transferencia)
-Entidad de pago       = Banco o entidad financiera origen del pago.
-Entidad identificada  = Si el banco o entidad financiera origen del pago está identificado (Sí, No).
-Tipo de pago          = Tipo de pago de la transacción (Débito, Crédito, Dinero Disponible, etc.)
-Tipo de cuota         = Tipo de crédito otorgado (Tasa sistémica, Tasa Preferencial, Crédito Interno, Crédito #N/D, No crédito).          
-Cuotas_cat            = Variable cualitiva para la cantidad de cuotas: si no hay información se define "Crédito #N/D", si corresponde a otros tipos de pago se lo aclara.
-Cuotas_num            = Variable cuantitativa para la cantidad de cuotas: solo considera pagos de tipo crédito. Asume valor vacío para otros tipos de pago o si no hay información.
-Cuota (c/tipo)        = Cantidad de cuotas con que se pagó + Tipo de cuota otorgada       
-Importe Neto $ARS"    = Monto abonado (en $ARS).
+- Fecha                 = Fecha de la transacción
+- ID Tienda             = ID de la tienda donde se realizó la transacción.
+- Status                = Estado de la transacción (aprobada, anulada, reembolsada, etc.)
+- Plataforma            = Plataforma desde la que se realizó el pago (Mundi Wallet, Pay Plus)
+- Aplicación Móvil      = Aplicación desde la que se realizó el pago.
+- Bandera               = Bandera correspondiente a la tarjeta (si se abonó de otra forma se lo define como transferencia)
+- Entidad de pago       = Banco o entidad financiera origen del pago.
+- Entidad identificada  = Si el banco o entidad financiera origen del pago está identificado (Sí, No).
+- Tipo de pago          = Tipo de pago de la transacción (Débito, Crédito, Dinero Disponible, etc.)
+- Tipo de cuota         = Tipo de crédito otorgado (Tasa sistémica, Tasa Preferencial, Crédito Interno, Crédito #N/D, No crédito).          
+- Cuotas_cat            = Variable cualitiva para la cantidad de cuotas: si no hay información se define "Crédito #N/D", si corresponde a otros tipos de pago se lo aclara.
+- Cuotas_num            = Variable cuantitativa para la cantidad de cuotas: solo considera pagos de tipo crédito. Asume valor vacío para otros tipos de pago o si no hay información.
+- Cuota (c/tipo)        = Cantidad de cuotas con que se pagó + Tipo de cuota otorgada       
+- Importe Neto $ARS"    = Monto abonado (en $ARS).
 
 
 
