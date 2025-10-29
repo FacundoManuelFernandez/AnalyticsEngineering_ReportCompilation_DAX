@@ -143,14 +143,12 @@ VAR TablaMW = //Crea la variable TablaMW, donde se van a recategorizar variables
         "AppUtilizadaMW",
             SWITCH(
                 TRUE(),
-                'MW'[Billetera_Interoperable_Nombre] = "CUENTADNI", "Cuenta DNI",
-                'MW'[Billetera_Interoperable_Nombre] = "UALA", "Ualá",
-                'MW'[Billetera_Interoperable_Nombre] = "PersonalPay", "Personal Pay",
-                'MW'[Billetera_Interoperable_Nombre] = "Billetera Galicia", "Banco Galicia",
-                //Se agrega esto para los campos vacios de Billetera_Interoperable_Nombre pero llenos en Banco_Interoperable_Nombre:
-                'MW'[Banco_Interoperable_Nombre] = "PAGO VIRTUAL DEL SUR SA", "Pago Virtual del Sur",
-                'MW'[Banco_Interoperable_Nombre] = "LEMON", "Lemon",
-                //Si Billetera_Interoperable_Nombre está vacío pero Banco_Interoperable_Nombre tiene valor, que traiga el dato de Banco_Interoperable_Nombre:
+                'MW'[Billetera_Interoperable_Nombre] = "Summit app", "Summit Bank",
+                'MW'[Billetera_Interoperable_Nombre] = "Pioneer", "Pioneer Financial",
+                'MW'[Billetera_Interoperable_Nombre] = "Horizon wallet", "Horizon National Bank",
+                //Se redefine el nombre de los registros con valor vacío en Billetera_Interoperable_Nombre pero completo en Banco_Interoperable_Nombre:
+                'MW'[Banco_Interoperable_Nombre] = "Crestview", "Crestview Bank & Trust",
+                //Si Billetera_Interoperable_Nombre está vacío pero Banco_Interoperable_Nombre tiene valor, que traiga el dato de Banco_Interoperable_Nombre original:
                 (ISBLANK('MW'[Billetera_Interoperable_Nombre]) || 'MW'[Billetera_Interoperable_Nombre] = "") && NOT(ISBLANK('MW'[Banco_Interoperable_Nombre])) && 'MW'[Banco_Interoperable_Nombre] <> "", 'MW'[Banco_Interoperable_Nombre],
                 //Si Billetera_Interoperable_Nombre también está vacío, usar "Mundi Wallet":
                 ISBLANK('MW'[Billetera_Interoperable_Nombre]) || 'MW'[Billetera_Interoperable_Nombre] = "","Mundi Wallet",
@@ -306,7 +304,7 @@ UNION( //Se compila en una tabla las columnas que vienen de ambos reportes
         "Aplicación Móvil", [AppUtilizadaMW], //Se trae la variable previamente recategorizada.        
         "Bandera", [Bandera], //Se trae la variable previamente recategorizada
         "Entidad de pago",
-        //Se trae la variable previamente recategorizada. Recordar que se definió que si la variable "POI Bank Name" era blank, se trajera el valor vacío.        
+        //Se trae la variable previamente recategorizada. Recordar que se definió que si la variable "Banco_Interoperable_Nombre" era blank, se trajera el valor vacío.        
             IF(
                 ISBLANK([Entidad de pagoMW]) || [Entidad de pagoMW] = "",
                 "MW" & " " & [Tipo de pago] & " " & [Bandera],
@@ -323,5 +321,6 @@ UNION( //Se compila en una tabla las columnas que vienen de ambos reportes
         "Importe Neto $ARS", 'MW'[Monto_Trx] //Se trae data bruta del reporte MW
     ) // Se cierra SELECTCOLUMNS TablaMW
 ) //Se cierra UNION
+
 
 
