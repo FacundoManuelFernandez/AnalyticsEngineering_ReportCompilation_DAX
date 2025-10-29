@@ -273,7 +273,7 @@ UNION( //Se compila en una tabla las columnas que vienen de ambos reportes
 
     SELECTCOLUMNS( //Se definen las columnas y fuente de datos de PayPlus
         TablaPayPlus,
-        "Fecha", 'PayPlus'[Fecha], //Se trae la data bruta del reporte PayPlus
+        "Fecha", 'PayPlus'[Date], //Se trae la data bruta del reporte PayPlus
         "ID Tienda", 'PayPlus'[Terminal], //Se trae la data bruta del reporte PayPlus. Luego con la tabla de dimensiones relacionada se propaga el filtro para definir Tienda
         "Status", [StatusPayPlus], //Se trae la variable previamente recategorizada
         "Plataforma", [Plataforma], //Se trae la variable previamente recategorizada
@@ -294,13 +294,13 @@ UNION( //Se compila en una tabla las columnas que vienen de ambos reportes
         "Cuotas_cat", [Cuotas_nominal], //Se trae la variable previamente recategorizada
         "Cuotas_num", [Cuotas_num], //Se trae la variable previamente recategorizada
         "Cuota (c/tipo)", [Cuotas_num] & " " & [Tipo de cuota],
-        "Importe Neto $ARS", 'PayPlus'[Monto] //Se trae la data bruta del reporte PayPlus
+        "Importe Neto $ARS", 'PayPlus'[Amount] //Se trae la data bruta del reporte PayPlus
     ), // Se cierra SELECTCOLUMNS TablaPayPlus
 
     SELECTCOLUMNS( //Se definen las columnas y fuente de datos de MW
         TablaMW,
-        "Fecha", 'MW'[TRANSACTION_DATE], //Se trae la data bruta del reporte MW
-        "ID Tienda", 'MW'[STORE_ID], //Se trae la data bruta del reporte MP. Luego con la tabla de dimensiones relacionada se propaga el filtro para definir Tienda
+        "Fecha", 'MW'[Fecha_Trx], //Se trae la data bruta del reporte MW
+        "ID Tienda", 'MW'[ID_Tienda], //Se trae la data bruta del reporte MP. Luego con la tabla de dimensiones relacionada se propaga el filtro para definir Tienda
         "Status", [StatusMW], //Se trae la variable previamente recategorizada
         "Plataforma", [Plataforma], //Se trae la variable previamente recategorizada
         "Aplicación Móvil", [AppUtilizadaMW], //Se trae la variable previamente recategorizada.        
@@ -320,7 +320,8 @@ UNION( //Se compila en una tabla las columnas que vienen de ambos reportes
         "Cuotas_cat", [Cuotas_nominal], //Se trae la variable previamente recategorizada
         "Cuotas_num", [Cuotas_num], //Se trae la variable previamente recategorizada
         "Cuota (c/tipo)", [Cuotas_num] & " " & [Tipo de cuota],        
-        "Importe Neto $ARS", 'MW'[TRANSACTION_AMOUNT] //Se trae data bruta del reporte MW
+        "Importe Neto $ARS", 'MW'[Monto_Trx] //Se trae data bruta del reporte MW
     ) // Se cierra SELECTCOLUMNS TablaMW
 ) //Se cierra UNION
+
 
